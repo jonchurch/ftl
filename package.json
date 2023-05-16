@@ -1,7 +1,6 @@
 {
   "name": "ftl",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,5 +10,18 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.4.0"
-  }
+  },
+  "devDependencies": {
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonchurch/ftl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonchurch/ftl/issues"
+  },
+  "homepage": "https://github.com/jonchurch/ftl#readme",
+  "description": ""
 }
