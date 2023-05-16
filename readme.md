@@ -12,16 +12,16 @@ Welcome to @spacejunk/ftl! Having trouble navigating the galaxy of rate limits a
 
 ## Installation
 
-Install @spacejunk/ftl using npm or yarn:
+Install @spacejunk/ftl and axios using npm or yarn:
 
 ```bash
-npm install @spacejunk/ftl
+npm install @spacejunk/ftl axios
 ```
 
 or
 
 ```bash
-yarn add @spacejunk/ftl
+yarn add @spacejunk/ftl axios
 ```
 
 ## Usage
