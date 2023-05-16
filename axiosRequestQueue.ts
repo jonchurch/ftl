@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 interface Job {
   id: string;
@@ -46,6 +46,7 @@ class RequestQueue {
 
     this.instance = instance ?? axios.create();
     this.addRequestInterceptor();
+    this.addResponseInterceptor()
   }
 
   private async processQueue() {
@@ -94,16 +95,19 @@ class RequestQueue {
   private getRequestDelay() {
     const delayBetweenRequests = 1000 / this.maxRequestsPerSecond;
     const burstWindowReset = this.burstTime * 1000;
-    const rateLimitReset = 1000;
+    // const rateLimitReset = 1000;
 
-    if (!this.rateTimer) {
-      this.rateTimer = setTimeout(() => {
-        this.requestsMade = 0;
-        // I think this should suffice for having a single reset for the overall called
-        this.rateTimer = null
-      }, rateLimitReset);
-    }
+    // we dont need this since we are updating in processQueue
+    // I wonder what the implications ofsettin the delay on the leading edge vs trailing edge of a request is?
+    // if (!this.rateTimer) {
+    //   this.rateTimer = setTimeout(() => {
+    //     this.requestsMade = 0;
+    //     // I think this should suffice for having a single reset for the overall called
+    //     this.rateTimer = null
+    //   }, rateLimitReset);
+    // }
 
+    // leavng this for now
    if (!this.burstTimer) {
       // does it matter that these are on static resets?
       // I can use the reset time on response header, but
@@ -157,6 +161,44 @@ class RequestQueue {
     });
       
   }
+    private addResponseInterceptor() {
+      this.instance.interceptors.response.use((response: AxiosResponse) => {
+        const rateLimitRemaining = Number(response.headers['x-ratelimit-remaining']);
+        const rateLimitReset = new Date(response.headers['x-ratelimit-reset']);
+        console.log(`${response.status}`)
+        if (!isNaN(rateLimitRemaining) && !isNaN(rateLimitReset.getTime())) {
+          this.updateQueue(rateLimitRemaining, rateLimitReset);
+        }
+        return response;
+      }, (error) => {
+        if (error.response && error.response.status === 429) {
+          // If a 429 error is encountered, add the request back to the queue for retry
+          // let's not implement retry rn and let axios-retry handle it
+          // I want to focus on using the rate limit headres rn
+          // this.retryRequest(error.config);
+        }
+        return Promise.reject(error);
+      });
+    }
+
+    private updateQueue(rateLimitRemaining: number, rateLimitReset: Date) {
+      const timeToReset = rateLimitReset.getTime() - Date.now();
+      this.requestsMade = Math.max(0, this.maxRequestsPerSecond - rateLimitRemaining);
+
+      if (this.rateTimer) {
+        clearTimeout(this.rateTimer);
+      }
+    
+    // should I update the getDelay function to return either the normal delay
+    // or the time until reset? Whichever is longer
+    // would also depend on if we have 0 RPS left,
+    // don't wait at all if we have 1-2 RPS left, otherwise wait until the reset, right?
+      this.rateTimer = setTimeout(() => {
+        this.requestsMade = 0;
+        this.rateTimer = null;
+      }, timeToReset);
+    }
+
     private generateUniqueId(): string {
       return (
         Date.now().toString(36) + Math.random().toString(36).substr(2, 5)
