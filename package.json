@@ -1,12 +1,12 @@
 {
-  "name": "ftl",
+  "name": "@spacejunk/ftl",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["spacetraders", "leaky bucket", "axios"],
+  "author": "jonchurch",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.4.0"
@@ -23,5 +23,5 @@
     "url": "https://github.com/jonchurch/ftl/issues"
   },
   "homepage": "https://github.com/jonchurch/ftl#readme",
-  "description": ""
+  "description": "Rate limiter for outgoing Axios requests, so you don't violate the speed of light!"
 }
