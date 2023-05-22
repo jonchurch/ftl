@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 
 interface Job {
   id: string;
@@ -132,8 +132,8 @@ class RequestQueue {
   // should also ad a response interceptor to update 
   // the queue information based on returned rate limit data
   private addRequestInterceptor() {
-    this.instance.interceptors.request.use(async (config: AxiosRequestConfig) => {
-      return new Promise<AxiosRequestConfig>(async (resolve) => {
+    this.instance.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+      return new Promise<InternalAxiosRequestConfig>(async (resolve) => {
         const executeJob = () => {
           resolve(config);
           this.handleRequestSent();
