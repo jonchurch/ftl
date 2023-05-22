@@ -15,7 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup index.ts --format esm,cjs --clean",
+    "build": "tsup index.ts --dts --format esm,cjs --clean",
     "prepublish": "npm run build",
     "test": ""
   },
