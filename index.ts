@@ -69,7 +69,7 @@ class RequestQueue {
           if (this.start) {
             // dang, I don't actually have the promise for the request
             // this won't be accurate if I can't tell when it's done
-            console.log(`Queue drained after ${Date.now() - this.start}`)
+            // console.log(`Queue drained after ${Date.now() - this.start}`)
           }
         }
         execute();
@@ -148,7 +148,7 @@ class RequestQueue {
         this.queue.push(newJob);
           
         if (!this.sending) {
-          console.log('starting')
+          // console.log('starting')
           this.start = Date.now()
           this.sending = true;
           this.processQueue();
