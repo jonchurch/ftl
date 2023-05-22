@@ -27,7 +27,7 @@
   "author": "jonchurch",
   "license": "ISC",
   "peerDependencies": {
-    "axios": "^1.0.0"
+    "axios": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20.1.5",
